@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { View } from 'react-native';
 
 import { Container, Content, Footer, FooterTab, Button, Icon, Header, Title } from 'native-base';
 
@@ -27,14 +27,16 @@ export default class MainTab extends Component {
                 </Header>
 
                 <Content>
-                    <WeiboList tab={this.state.activeTab} />
+                    <View style={{ marginHorizontal: 7 }}>
+                        <WeiboList tab={this.state.activeTab} />
+                    </View>
                 </Content>
 
                 <Footer >
                     <FooterTab>
                         <Button onPress={() => this.onPressTab('Love')}>
-                            <Icon name='ios-heart' />
                             Love
+                            <Icon name='ios-heart' />
                         </Button>
                         <Button onPress={() => this.onPressTab('Me')}>
                             Me
@@ -42,7 +44,7 @@ export default class MainTab extends Component {
                         </Button>
                         <Button onPress={() => this.onPressTab('Set')}>
                             Set
-                            <Icon name='ios-contact' />
+                            <Icon name='ios-settings' />
                         </Button>
                     </FooterTab>
                 </Footer>

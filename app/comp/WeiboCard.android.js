@@ -13,7 +13,7 @@ export default class WeiboCard extends Component {
                 <CardItem>
                     <Thumbnail source={require('../assets/12.jpg')} />
                     <Text>{this.props.weiData.name}</Text>
-                    <Text note>{this.props.weiData.time}</Text>
+                    <Text>{this.props.weiData.time}</Text>
                 </CardItem>
 
                 <CardItem cardBody>
