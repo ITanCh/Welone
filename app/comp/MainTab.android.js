@@ -13,9 +13,17 @@ export default class MainTab extends Component {
         this.state = {
             activeTab: 'Love',
         };
+
+        this.weiboList=null;
     }
 
     onPressTab(tab) {
+        //Double clicking this tab will refresh weibo content
+        if (tab=='Love'&&this.state.activeTab=='Love'){
+            if(this.weiboList!=null){
+                this.weiboList.getTimeLine(WeiboList.NEW_WEIBO);
+            }
+        }
         this.setState({ activeTab: tab })
     }
 
@@ -28,7 +36,7 @@ export default class MainTab extends Component {
 
                 <Content>
                     <View style={{ marginHorizontal: 7 }}>
-                        <WeiboList tab={this.state.activeTab} />
+                        <WeiboList ref={(weiboList) => { this.weiboList = weiboList } } tab={this.state.activeTab} />
                     </View>
                 </Content>
 

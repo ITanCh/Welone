@@ -33,12 +33,12 @@ public class WeiboModule extends ReactContextBaseJavaModule {
 
     private AuthInfo mAuthInfo = null;
 
-    // 用于获取微博信息流等操作的API
-    private StatusesAPI mStatusesAPI = null;
     //注意：SsoHandler 仅当 SDK 支持 SSO 时有效
     private SsoHandler mSsoHandler = null;
     //User API
     private UsersAPI mUsersAPI = null;
+    ///Statuses API
+    private StatusesAPI mStatusesAPI = null;
 
     private final static String LOG_TAG = "weidemo";
 
@@ -155,6 +155,22 @@ public class WeiboModule extends ReactContextBaseJavaModule {
         mSsoHandler.authorize(new AuthListener(successCallback, errorCallback));
     }
 
+
+    @ReactMethod
+    public void logout(Callback callback) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            callback.invoke(false);
+            return;
+        }
+        mAuthInfo = null;
+        mSsoHandler = null;
+        mUsersAPI = null;
+        mStatusesAPI = null;
+        AccessTokenKeeper.clear(activity);
+        callback.invoke(true);
+    }
+
     @ReactMethod
     public void isLogin(Callback callback) {
         Activity activity = getCurrentActivity();
@@ -178,13 +194,16 @@ public class WeiboModule extends ReactContextBaseJavaModule {
             if (mUsersAPI == null) {
                 mUsersAPI = new UsersAPI(getCurrentActivity(), Constants.APP_KEY, token); // 获取用户信息接口
             }
-
-            long uid = Long.parseLong(token.getUid());
-            String info = mUsersAPI.showSync(uid);
-            if (info != null && info.length() > 0) {
-                successCallback.invoke(info);
-            } else {
-                errorCallback.invoke("Get user information: showSync error..");
+            try {
+                long uid = Long.parseLong(token.getUid());
+                String info = mUsersAPI.showSync(uid);
+                if (info != null && info.length() > 0) {
+                    successCallback.invoke(info);
+                } else {
+                    errorCallback.invoke("Get user information: showSync error..");
+                }
+            } catch (com.sina.weibo.sdk.exception.WeiboException e) {
+                errorCallback.invoke("Please open the Internet :)");
             }
         } else {
             errorCallback.invoke("Get user information: token error..");
@@ -192,16 +211,25 @@ public class WeiboModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void logout(Callback callback) {
-        Activity activity = getCurrentActivity();
-        if (activity == null) {
-            callback.invoke(false);
-            return;
+    public void getTimeline(Integer sinceId, Integer maxId, Callback successCallback, Callback errorCallback) {
+        Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
+        if (token != null && token.isSessionValid()) {
+            if (mStatusesAPI == null) {
+                mStatusesAPI = new StatusesAPI(getCurrentActivity(), Constants.APP_KEY, token);
+            }
+            try {
+                String info = mStatusesAPI.friendsTimelineSync(sinceId, maxId, 10, 1, false, 0, false);
+                if (info != null && info.length() > 0) {
+                    successCallback.invoke(info);
+                } else {
+                    errorCallback.invoke("Get user information: showSync error..");
+                }
+            } catch (com.sina.weibo.sdk.exception.WeiboException e) {
+                errorCallback.invoke("Please open the Internet :)");
+            }
+        } else {
+            errorCallback.invoke("Get user information: token error..");
         }
-        mAuthInfo = null;
-        mSsoHandler = null;
-        mUsersAPI = null;
-        AccessTokenKeeper.clear(activity);
-        callback.invoke(true);
     }
+
 }

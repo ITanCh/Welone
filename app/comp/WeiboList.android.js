@@ -10,27 +10,31 @@ const NOT_LOGIN = 0;
 const IS_LOGIN = 1;
 const ING_LOGIN = 2;
 
+export const NEW_WEIBO = 0;
+export const OLD_WEIBO = 1;
+
 export default class WeiboList extends Component {
 
     constructor(props) {
         super(props);
 
-        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        let ds1 = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        let ds2 = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
         var a = new WeiboContent('xiaxia', '../assets/12.jpg', '2017-1-1', 'nihao woshihahahah,nihao', '../assets/12.jpg', 123, 456);
         var b = new WeiboContent('dada', '../assets/12.jpg', '2017-1-1', 'nihao woshihahahah,nihao', '../assets/12.jpg', 123, 456);
         var c = new WeiboContent('lulu', '../assets/12.jpg', '2017-1-1', 'nihao woshihahahah,nihao', '../assets/12.jpg', 123, 456);
 
         this.state = {
-            loveSource: ds.cloneWithRows([
-                a, b
-            ]),
-            meSource: ds.cloneWithRows([
-                c
-            ]),
+            loveSource: ds1,
+            meSource: ds2,
             login: ING_LOGIN,
-            usrInfo: null
+            usrInfo: null,
+            sinceID: 0,
+            maxID: 0,
         };
+
+        this.loveData = [];
 
         WeiboModule.isLogin((ok) => {
             if (ok) {
@@ -57,6 +61,7 @@ export default class WeiboList extends Component {
         );
     }
 
+    //User wants to logout
     onPressLogout() {
         this.setState({ login: ING_LOGIN });
         WeiboModule.logout(
@@ -66,7 +71,8 @@ export default class WeiboList extends Component {
         );
     }
 
-    getUserInfo() {
+    //Get the profile of the user
+    getUserInfo(type) {
         WeiboModule.getUserInfo(
             (success) => {
                 if (success.length > 0) {
@@ -74,20 +80,69 @@ export default class WeiboList extends Component {
                     this.setState({ userInfo: ui, login: IS_LOGIN });
                 } else {
                     this.setState({ login: NOT_LOGIN });
-                    ToastAndroid.showWithGravity("user info is error", ToastAndroid.SHORT, ToastAndroid.BOTTOM, )
+                    ToastAndroid.showWithGravity("user info is error", ToastAndroid.SHORT, ToastAndroid.CENTER, )
                 }
             },
             (err) => {
                 this.setState({ login: NOT_LOGIN });
-                ToastAndroid.showWithGravity(err, ToastAndroid.SHORT, ToastAndroid.BOTTOM, )
+                ToastAndroid.showWithGravity(err, ToastAndroid.SHORT, ToastAndroid.CENTER)
             }
         );
     }
 
+    //Get the weibo of the user's friends
+    getTimeLine(type) {
+        let since = 0;
+        let max = 0;
+
+        if (type === NEW_WEIBO) {
+            since = this.state.sinceID;
+        } else {
+            max = this.state.maxID;
+        }
+
+        WeiboModule.getTimeline(
+            since,
+            max,
+            (success) => {
+                if (success.length > 0) {
+                    let tl = JSON.parse(success);
+                    let statuses = tl.statuses;
+                    if (statuses.length > 0) {
+                        if (type === NEW_WEIBO) {
+                            this.loveData = statuses.concat(this.loveData);
+                            ToastAndroid.showWithGravity(`You have ${statuese.length} new weibo :)`, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                        } else {
+                            this.loveData = this.loveData.concat(statuses);
+                        }
+
+                        let dl = this.loveData.length;
+                        let nSince = this.loveData[0].id;
+                        let nMax = this.loveData[dl - 1].id;
+
+                        this.setState({
+                            sinceID: nSince,
+                            maxID: nMax,
+                            loveSource: this.state.loveSource.cloneWithRows(this.loveData)
+                        });
+                    } else {
+                        ToastAndroid.showWithGravity('Your friends are quiet :P', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    }
+                    console.log(success);
+                } else {
+                    ToastAndroid.showWithGravity('Your friends are disappeared :(', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                }
+            },
+            (err) => {
+                ToastAndroid.showWithGravity(err, ToastAndroid.SHORT, ToastAndroid.CENTER);
+            }
+        );
+    }
 
     //Render
     render() {
         if (this.props.tab === 'Love') {
+            //Time line
             return (
                 <ListView
                     dataSource={this.state.loveSource}
@@ -95,6 +150,7 @@ export default class WeiboList extends Component {
                     />
             );
         } else if (this.props.tab === 'Me') {
+            //My info
             return (
                 <ListView
                     dataSource={this.state.meSource}
@@ -102,6 +158,7 @@ export default class WeiboList extends Component {
                     />
             );
         } else {
+            //User Setting
             let content = null;
             if (this.state.login === NOT_LOGIN) {
                 content = (
