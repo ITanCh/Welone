@@ -136,6 +136,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile 'com.github.8tory:weibo-android-sdk:-SNAPSHOT'
+    //compile ':weibo-android-sdk:-SNAPSHOT'
 }
 
 // Run this once to be able to run the application with BUCK

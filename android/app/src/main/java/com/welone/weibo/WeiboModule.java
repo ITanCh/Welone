@@ -211,14 +211,16 @@ public class WeiboModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getTimeline(Integer sinceId, Integer maxId, Callback successCallback, Callback errorCallback) {
+    public void getTimeline(String sinceId, String maxId, Callback successCallback, Callback errorCallback) {
         Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
         if (token != null && token.isSessionValid()) {
             if (mStatusesAPI == null) {
                 mStatusesAPI = new StatusesAPI(getCurrentActivity(), Constants.APP_KEY, token);
             }
             try {
-                String info = mStatusesAPI.friendsTimelineSync(sinceId, maxId, 10, 1, false, 0, false);
+                long since = Long.parseLong(sinceId);
+                long max = Long.parseLong(maxId);
+                String info = mStatusesAPI.friendsTimelineSync(since, max, 10, 1, false, 0, false);
                 if (info != null && info.length() > 0) {
                     successCallback.invoke(info);
                 } else {

@@ -4,6 +4,9 @@ import { View } from 'react-native';
 import { Container, Content, Footer, FooterTab, Button, Icon, Header, Title } from 'native-base';
 
 import WeiboList from './WeiboList'
+import { NEW_WEIBO, OLD_WEIBO, TAB_LOVE, TAB_ME, TAB_SET } from './WeiboConstant';
+
+import TianTheme from '../theme/TianTheme'
 
 export default class MainTab extends Component {
 
@@ -11,17 +14,17 @@ export default class MainTab extends Component {
         super(props);
 
         this.state = {
-            activeTab: 'Love',
+            activeTab: TAB_LOVE,
         };
 
-        this.weiboList=null;
+        this.weiboList = null;
     }
 
     onPressTab(tab) {
         //Double clicking this tab will refresh weibo content
-        if (tab=='Love'&&this.state.activeTab=='Love'){
-            if(this.weiboList!=null){
-                this.weiboList.getTimeLine(WeiboList.NEW_WEIBO);
+        if (tab === TAB_LOVE && this.state.activeTab === TAB_LOVE) {
+            if (this.weiboList != null) {
+                this.weiboList.getTimeLine(NEW_WEIBO);
             }
         }
         this.setState({ activeTab: tab })
@@ -30,11 +33,11 @@ export default class MainTab extends Component {
     render() {
         return (
             <Container>
-                <Header>
+                <Header theme={TianTheme}>
                     <Title>{this.state.activeTab}</Title>
                 </Header>
 
-                <Content>
+                <Content style={{ backgroundColor: '#f8f9f9' }}>
                     <View style={{ marginHorizontal: 7 }}>
                         <WeiboList ref={(weiboList) => { this.weiboList = weiboList } } tab={this.state.activeTab} />
                     </View>
@@ -42,15 +45,15 @@ export default class MainTab extends Component {
 
                 <Footer >
                     <FooterTab>
-                        <Button onPress={() => this.onPressTab('Love')}>
+                        <Button onPress={() => this.onPressTab(TAB_LOVE)}>
                             Love
                             <Icon name='ios-heart' />
                         </Button>
-                        <Button onPress={() => this.onPressTab('Me')}>
+                        <Button onPress={() => this.onPressTab(TAB_ME)}>
                             Me
                             <Icon name='ios-ice-cream' />
                         </Button>
-                        <Button onPress={() => this.onPressTab('Set')}>
+                        <Button onPress={() => this.onPressTab(TAB_SET)}>
                             Set
                             <Icon name='ios-settings' />
                         </Button>
