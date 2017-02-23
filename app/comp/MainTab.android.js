@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-import { Container, Content, Footer, FooterTab, Button, Icon, Header, Title } from 'native-base';
+import { Container, Content, Footer, FooterTab, Button, Icon, Header, Text as TextBase } from 'native-base';
 
 import WeiboList from './WeiboList'
 import { NEW_WEIBO, OLD_WEIBO, TAB_LOVE, TAB_ME, TAB_SET } from './WeiboConstant';
@@ -30,11 +30,23 @@ export default class MainTab extends Component {
         this.setState({ activeTab: tab })
     }
 
+    getTabTitle() {
+        if (this.state.activeTab === TAB_LOVE) {
+            return '关注';
+        } else if (this.state.activeTab === TAB_ME) {
+            return '我';
+        } else {
+            return '设置';
+        }
+    }
+
     render() {
         return (
             <Container>
                 <Header theme={TianTheme}>
-                    <Title>{this.state.activeTab}</Title>
+                    <View style={{ alignItems: 'center', flex: 1, marginRight: 15 }}>
+                        <TextBase>{this.getTabTitle()}</TextBase>
+                    </View>
                 </Header>
 
                 <Content style={{ backgroundColor: '#f8f9f9' }}>
@@ -43,18 +55,18 @@ export default class MainTab extends Component {
                     </View>
                 </Content>
 
-                <Footer >
+                <Footer theme={TianTheme}>
                     <FooterTab>
                         <Button onPress={() => this.onPressTab(TAB_LOVE)}>
-                            Love
+                            关注
                             <Icon name='ios-heart' />
                         </Button>
                         <Button onPress={() => this.onPressTab(TAB_ME)}>
-                            Me
+                            我
                             <Icon name='ios-ice-cream' />
                         </Button>
                         <Button onPress={() => this.onPressTab(TAB_SET)}>
-                            Set
+                            设置
                             <Icon name='ios-settings' />
                         </Button>
                     </FooterTab>

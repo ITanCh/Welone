@@ -220,7 +220,7 @@ public class WeiboModule extends ReactContextBaseJavaModule {
             try {
                 long since = Long.parseLong(sinceId);
                 long max = Long.parseLong(maxId);
-                String info = mStatusesAPI.friendsTimelineSync(since, max, 10, 1, false, 0, false);
+                String info = mStatusesAPI.friendsTimelineSync(since, max, 20, 1, false, 0, false);
                 if (info != null && info.length() > 0) {
                     successCallback.invoke(info);
                 } else {
