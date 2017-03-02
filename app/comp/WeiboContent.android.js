@@ -1,61 +1,24 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-
+import { Text, View, Image, TouchableHighlight } from 'react-native';
 import { Container, Content, Footer, FooterTab, Button, Icon, Header, Text as TextBase } from 'native-base';
 
-import WeiboList from './WeiboList'
-import { NEW_WEIBO, OLD_WEIBO, TAB_LOVE, TAB_ME, TAB_SET } from './WeiboConstant';
-
 import TianTheme from '../theme/TianTheme'
+import WeiboCard from './WeiboCard'
 
-export default class MainTab extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            activeTab: TAB_LOVE,
-        };
-
-        this.weiboList = null;
-    }
-
-    onPressTab(tab) {
-        //Double clicking this tab will refresh weibo content
-        if (tab === TAB_LOVE && this.state.activeTab === TAB_LOVE) {
-            if (this.weiboList != null) {
-                this.weiboList.getTimeLine(NEW_WEIBO);
-            }
-        }
-        this.setState({ activeTab: tab })
-    }
-
-    getTabTitle() {
-        if (this.state.activeTab === TAB_LOVE) {
-            return '关注';
-        } else if (this.state.activeTab === TAB_ME) {
-            return '我';
-        } else {
-            return '设置';
-        }
-    }
+export default class WeiboContent extends Component {
 
     render() {
         return (
             <Container>
                 <Header theme={TianTheme}>
                     <View style={{ alignItems: 'center', flex: 1, marginRight: 15 }}>
-                        <TextBase>{this.getTabTitle()}</TextBase>
+                        <TextBase>微博详情</TextBase>
                     </View>
                 </Header>
 
                 <Content style={{ backgroundColor: '#f8f9f9' }}>
                     <View style={{ marginHorizontal: 7 }}>
-                        <WeiboList
-                            navigator={this.props.navigator}
-                            ref={(weiboList) => { this.weiboList = weiboList }}
-                            tab={this.state.activeTab}
-                        />
+                        <WeiboCard weiData={this.props.data} />
                     </View>
                 </Content>
 

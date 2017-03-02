@@ -171,7 +171,7 @@ export default class WeiboList extends Component {
             return (
                 <ListView
                     dataSource={this.state.loveSource}
-                    renderRow={(rowData) => <WeiboCard weiData={rowData} />}
+                    renderRow={(rowData) => <WeiboCard weiData={rowData} navigator={this.props.navigator}/>}
                     renderFooter={() => this.getEnd(GET_FOOTER)}
                     />
             );

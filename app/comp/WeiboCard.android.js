@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Image, View, Text } from 'react-native';
+import { Image, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import { Card, CardItem, Thumbnail, Button, Text as TextBase } from 'native-base';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import WeiboImage from './WeiboImage';
+import WeiboContent from './WeiboContent';
 
 export default class WeiboCard extends Component {
 
@@ -10,8 +11,8 @@ export default class WeiboCard extends Component {
         super(props);
 
         let lc = (
-            <View style={{ marginTop: 7, borderWidth: 1, borderColor: '#e5e8e8', borderRadius: 2, backgroundColor: '#ffffff' }}>
-                <View style={{ flexDirection: 'row', padding: 7, borderBottomWidth: 0.5, borderBottomColor: '#e5e8e8' }}>
+            <View style={styles.cardStyle}>
+                <View style={styles.cardHeadStyle}>
                     <Thumbnail size={40} source={{ uri: this.props.weiData.user.profile_image_url }} />
                     <View style={{ marginLeft: 7, justifyContent: 'space-around' }}>
                         <Text style={{ fontSize: 13, color: '#eb984e' }}>{this.props.weiData.user.name}</Text>
@@ -19,23 +20,23 @@ export default class WeiboCard extends Component {
                     </View>
                 </View>
 
-                <View style={{ paddingHorizontal: 10, paddingVertical: 7, borderBottomWidth: 0.5, borderBottomColor: '#e5e8e8' }}>
-                    <TextBase>
+                <View style={styles.cardBodyStyle} >
+                    <TextBase onPress={() => this.startWeiboContent(this.props.weiData)}>
                         {this.props.weiData.text}
                     </TextBase>
                     <WeiboImage picUrls={this.props.weiData.pic_urls} />
                 </View>
 
-                <View style={{ paddingVertical: 5, flexDirection: 'row', justifyContent: 'space-around', borderBottomWidth: 0.5, borderBottomColor: '#e5e8e8' }}>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRightWidth: 0.5, borderRightColor: '#e5e8e8' }} >
+                <View style={styles.cardFootStyle}>
+                    <View style={styles.commentButton} >
                         <EvilIcon color='silver' size={23} name='external-link' />
                         <Text style={{ color: 'silver' }}>{this.props.weiData.reposts_count}</Text>
                     </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRightWidth: 0.5, borderRightColor: '#e5e8e8' }} >
+                    <View style={styles.commentButton} >
                         <EvilIcon color='silver' size={23} name='comment' />
                         <Text style={{ color: 'silver' }}>{this.props.weiData.comments_count}</Text>
                     </View>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
+                    <View style={styles.favourButton} >
                         <EvilIcon color='silver' size={23} name='like' />
                         <Text style={{ color: 'silver' }}>{this.props.weiData.attitudes_count}</Text>
                     </View>
@@ -47,6 +48,19 @@ export default class WeiboCard extends Component {
             content: lc
         };
 
+    }
+
+    startWeiboContent(data) {
+        const { navigator } = this.props;
+        console.log(navigator);
+        if (navigator) {
+            navigator.push({
+                component: WeiboContent,
+                params: {
+                    data: data
+                }
+            })
+        }
     }
 
     formatTime(time) {
@@ -65,3 +79,46 @@ export default class WeiboCard extends Component {
         return this.state.content;
     }
 }
+
+const styles = StyleSheet.create({
+    cardStyle: {
+        marginTop: 7,
+        borderWidth: 1,
+        borderColor: '#e5e8e8',
+        borderRadius: 2,
+        backgroundColor: '#ffffff'
+    },
+    cardHeadStyle: {
+        flexDirection: 'row',
+        padding: 7,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#e5e8e8'
+    },
+    cardBodyStyle: {
+        paddingHorizontal: 10,
+        paddingVertical: 7,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#e5e8e8'
+    },
+    cardFootStyle: {
+        paddingVertical: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#e5e8e8'
+    },
+    commentButton: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRightWidth: 0.5,
+        borderRightColor: '#e5e8e8'
+    },
+    favourButton: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});

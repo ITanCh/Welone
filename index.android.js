@@ -8,14 +8,26 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
+  Navigator
 } from 'react-native';
 
 import MainTab from './app/comp/MainTab';
 
 export default class welone extends Component {
   render() {
+
+    let mainComponent = MainTab;
     return (
-      <MainTab/>
+      <Navigator
+        initialRoute={{ component: mainComponent }}
+        configureScene={(route) => {
+          return Navigator.SceneConfigs.VerticalDownSwipeJump;
+        }}
+        renderScene={(route, navigator) => {
+          let Comp = route.component;
+          return <Comp {...route.params} navigator={navigator} />
+        }}
+      />
     );
   }
 }
