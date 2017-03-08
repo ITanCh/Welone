@@ -1,58 +1,13 @@
 import React, { Component } from 'react';
 import { Image, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
-import { Card, CardItem, Thumbnail, Button, Text as TextBase } from 'native-base';
-import EvilIcon from 'react-native-vector-icons/EvilIcons';
+import { Card, CardItem, Thumbnail, Button, Text as TextBase, Icon } from 'native-base';
 import WeiboImage from './WeiboImage';
 import WeiboContent from './WeiboContent';
 
 export default class WeiboCard extends Component {
 
-    constructor(props) {
-        super(props);
-
-        let lc = (
-            <View style={styles.cardStyle}>
-                <View style={styles.cardHeadStyle}>
-                    <Thumbnail size={40} source={{ uri: this.props.weiData.user.profile_image_url }} />
-                    <View style={{ marginLeft: 7, justifyContent: 'space-around' }}>
-                        <Text style={{ fontSize: 13, color: '#eb984e' }}>{this.props.weiData.user.name}</Text>
-                        <Text style={{ fontSize: 11, color: '#b3b6b7' }}>{this.formatTime(this.props.weiData.created_at)}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.cardBodyStyle} >
-                    <TextBase onPress={() => this.startWeiboContent(this.props.weiData)}>
-                        {this.props.weiData.text}
-                    </TextBase>
-                    <WeiboImage picUrls={this.props.weiData.pic_urls} />
-                </View>
-
-                <View style={styles.cardFootStyle}>
-                    <View style={styles.commentButton} >
-                        <EvilIcon color='silver' size={23} name='external-link' />
-                        <Text style={{ color: 'silver' }}>{this.props.weiData.reposts_count}</Text>
-                    </View>
-                    <View style={styles.commentButton} >
-                        <EvilIcon color='silver' size={23} name='comment' />
-                        <Text style={{ color: 'silver' }}>{this.props.weiData.comments_count}</Text>
-                    </View>
-                    <View style={styles.favourButton} >
-                        <EvilIcon color='silver' size={23} name='like' />
-                        <Text style={{ color: 'silver' }}>{this.props.weiData.attitudes_count}</Text>
-                    </View>
-                </View>
-            </View>
-        );
-
-        this.state = {
-            content: lc
-        };
-
-    }
-
     startWeiboContent(data) {
         const { navigator } = this.props;
-        console.log(navigator);
         if (navigator) {
             navigator.push({
                 component: WeiboContent,
@@ -76,7 +31,40 @@ export default class WeiboCard extends Component {
     }
 
     render() {
-        return this.state.content;
+        let lc = (
+            <View style={styles.cardStyle}>
+                <View style={styles.cardHeadStyle}>
+                    <Thumbnail size={40} source={{ uri: this.props.weiData.user.profile_image_url }} />
+                    <View style={{ marginLeft: 7, justifyContent: 'space-around' }}>
+                        <Text style={{ fontSize: 13, color: '#eb984e' }}>{this.props.weiData.user.name}</Text>
+                        <Text style={{ fontSize: 11, color: '#b3b6b7' }}>{this.formatTime(this.props.weiData.created_at)}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.cardBodyStyle} >
+                    <TextBase onPress={() => this.startWeiboContent(this.props.weiData)}>
+                        {this.props.weiData.text}
+                    </TextBase>
+                    <WeiboImage picUrls={this.props.weiData.pic_urls} />
+                </View>
+
+                <View style={styles.cardFootStyle}>
+                    <View style={styles.commentButton} >
+                        <Icon style={{ color: 'silver', fontSize: 20 }} name='ios-share-outline' />
+                        <Text style={{ color: 'silver', marginLeft: 3 }}>{this.props.weiData.reposts_count}</Text>
+                    </View>
+                    <View style={styles.commentButton} >
+                        <Icon style={{ color: 'silver', fontSize: 20 }} name='ios-chatboxes-outline' />
+                        <Text style={{ color: 'silver', marginLeft: 3 }}>{this.props.weiData.comments_count}</Text>
+                    </View>
+                    <View style={styles.favourButton} >
+                        <Icon style={{ color: 'silver', fontSize: 20 }} name='ios-thumbs-up-outline' />
+                        <Text style={{ color: 'silver', marginLeft: 3 }}>{this.props.weiData.attitudes_count}</Text>
+                    </View>
+                </View>
+            </View>
+        );
+        return lc;
     }
 }
 

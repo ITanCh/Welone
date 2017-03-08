@@ -78,7 +78,7 @@ export default class WeiboList extends Component {
                     this.setState({ userInfo: ui, login: IS_LOGIN });
                 } else {
                     this.setState({ login: NOT_LOGIN });
-                    ToastAndroid.showWithGravity("user info is error", ToastAndroid.SHORT, ToastAndroid.CENTER, )
+                    ToastAndroid.showWithGravity("用户信息错误！", ToastAndroid.SHORT, ToastAndroid.CENTER, )
                 }
             },
             (err) => {
@@ -108,31 +108,32 @@ export default class WeiboList extends Component {
 
         WeiboModule.getTimeline(
             since.toString(),
-            max.toLocaleString(),
+            max.toString(),
             (success) => {
                 if (success.length > 0) {
                     let tl = JSON.parse(success);
                     let statuses = tl.statuses;
                     if (statuses.length > 0) {
                         if (type === NEW_WEIBO) {
-                            this.loveData = statuses.concat(this.loveData);
-                            ToastAndroid.showWithGravity(`You have ${statuses.length} new weibo :)`, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                            this.loveData = statuses;
+                            ToastAndroid.showWithGravity(`有${statuses.length}条新微博 :)`, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                            this.sinceID = tl.since_id;
+                            this.maxID = tl.max_id;
                         } else {
                             this.loveData = this.loveData.concat(statuses);
-                            ToastAndroid.showWithGravity(`You dig ${statuses.length} old weibo :)`, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                            ToastAndroid.showWithGravity(`挖出${statuses.length}条旧微博 :)`, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                            this.maxID = (tl.max_id < this.maxID || this.maxID === 0) ? tl.max_id : this.maxID;
                         }
 
-                        this.sinceID = tl.since_id > this.sinceID ? tl.since_id : this.sinceID;
-                        this.maxID = (tl.max_id < this.maxID || this.maxID === 0) ? tl.max_id : this.maxID;
                         //update the listview data
                         this.setState({
                             loveSource: this.state.loveSource.cloneWithRows(this.loveData)
                         });
                     } else {
-                        ToastAndroid.showWithGravity('Your friends are quiet :P', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                        ToastAndroid.showWithGravity('你的朋友很安静 zZ', ToastAndroid.SHORT, ToastAndroid.CENTER);
                     }
                 } else {
-                    ToastAndroid.showWithGravity('Your friends are disappeared :(', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    ToastAndroid.showWithGravity('你的朋友找不到了 :(', ToastAndroid.SHORT, ToastAndroid.CENTER);
                 }
 
                 //reset gettingTimeLine
@@ -151,14 +152,14 @@ export default class WeiboList extends Component {
             return (
                 <View style={{ alignItems: 'center' }} >
                     <View style={{ marginVertical: 7 }}>
-                        <Button bordered info small onPress={() => this.getTimeLine(OLD_WEIBO)}> Load More </Button>
+                        <Button bordered info small onPress={() => this.getTimeLine(OLD_WEIBO)}> 更多 </Button>
                     </View>
                 </View>
             );
         } else {
             return (
                 <View style={{ alignItems: 'center', backgroundColor: 'blue' }} >
-                    <Button bordered> Loading.. </Button>
+                    <Button bordered> 加载中.. </Button>
                 </View>
             );
         }
@@ -171,9 +172,9 @@ export default class WeiboList extends Component {
             return (
                 <ListView
                     dataSource={this.state.loveSource}
-                    renderRow={(rowData) => <WeiboCard weiData={rowData} navigator={this.props.navigator}/>}
+                    renderRow={(rowData) => <WeiboCard weiData={rowData} navigator={this.props.navigator} />}
                     renderFooter={() => this.getEnd(GET_FOOTER)}
-                    />
+                />
             );
         } else if (this.props.tab === TAB_ME) {
             //My info
@@ -181,7 +182,7 @@ export default class WeiboList extends Component {
                 <ListView
                     dataSource={this.state.meSource}
                     renderRow={(rowData) => <WeiboCard weiData={rowData} />}
-                    />
+                />
             );
         } else {
             //User Setting
@@ -197,7 +198,7 @@ export default class WeiboList extends Component {
                         <View style={{ width: 200, height: 100 }}>
                             <Button block primary onPress={() => this.onPressLogin()}>
                                 <Icon name='ios-log-in' />
-                                Login Weibo
+                                登陆
                             </Button>
                         </View>
 
@@ -245,7 +246,7 @@ export default class WeiboList extends Component {
                         <View style={{ width: 100, marginTop: 10 }}>
                             <Button block danger onPress={() => this.onPressLogout()}>
                                 <Icon name='md-log-out' />
-                                Logout
+                                登出
                             </Button>
                         </View>
                     </View>

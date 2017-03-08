@@ -34,7 +34,7 @@ export default class MainTab extends Component {
         if (this.state.activeTab === TAB_LOVE) {
             return '关注';
         } else if (this.state.activeTab === TAB_ME) {
-            return '我';
+            return '消息';
         } else {
             return '设置';
         }
@@ -42,8 +42,8 @@ export default class MainTab extends Component {
 
     render() {
         return (
-            <Container>
-                <Header theme={TianTheme}>
+            <Container theme={TianTheme}>
+                <Header>
                     <View style={{ alignItems: 'center', flex: 1, marginRight: 15 }}>
                         <TextBase>{this.getTabTitle()}</TextBase>
                     </View>
@@ -59,13 +59,13 @@ export default class MainTab extends Component {
                     </View>
                 </Content>
 
-                <Footer theme={TianTheme} style={{ borderTopWidth: 1, borderTopColor: '#e5e8e8' }}>
+                <Footer style={{ borderTopWidth: 1, borderTopColor: '#e5e8e8' }}>
                     <FooterTab>
                         <Button onPress={() => this.onPressTab(TAB_LOVE)}>
                             <Icon name='ios-heart' />
                         </Button>
                         <Button onPress={() => this.onPressTab(TAB_ME)}>
-                            <Icon name='ios-ice-cream' />
+                            <Icon name='ios-chatbubbles' />
                         </Button>
                         <Button onPress={() => this.onPressTab(TAB_SET)}>
                             <Icon name='ios-settings' />

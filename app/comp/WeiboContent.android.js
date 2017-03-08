@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableHighlight } from 'react-native';
-import { Container, Content, Footer, FooterTab, Button, Icon, Header, Text as TextBase } from 'native-base';
-
-import TianTheme from '../theme/TianTheme'
-import WeiboCard from './WeiboCard'
+import { View } from 'react-native';
+import { Container, Content, Footer, FooterTab, Button, Header, Text as TextBase, Icon } from 'native-base';
+import TianTheme from '../theme/TianTheme';
+import WeiboCard from './WeiboCard';
 
 export default class WeiboContent extends Component {
 
+    //navigate to the parent
+    pressBack() {
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.pop();
+        }
+    }
+
     render() {
         return (
-            <Container>
-                <Header theme={TianTheme}>
+            <Container theme={TianTheme}>
+                <Header>
                     <View style={{ alignItems: 'center', flex: 1, marginRight: 15 }}>
                         <TextBase>微博详情</TextBase>
                     </View>
@@ -22,16 +29,19 @@ export default class WeiboContent extends Component {
                     </View>
                 </Content>
 
-                <Footer theme={TianTheme} style={{ borderTopWidth: 1, borderTopColor: '#e5e8e8' }}>
+                <Footer style={{ borderTopWidth: 1, borderTopColor: '#e5e8e8' }}>
                     <FooterTab>
-                        <Button onPress={() => this.onPressTab(TAB_LOVE)}>
-                            <Icon name='ios-heart' />
+                        <Button>
+                            <Icon name='ios-share' />
                         </Button>
-                        <Button onPress={() => this.onPressTab(TAB_ME)}>
-                            <Icon name='ios-ice-cream' />
+                        <Button>
+                            <Icon name='ios-chatboxes' />
                         </Button>
-                        <Button onPress={() => this.onPressTab(TAB_SET)}>
-                            <Icon name='ios-settings' />
+                        <Button>
+                            <Icon name='ios-thumbs-up' />
+                        </Button>
+                        <Button onPress={() => this.pressBack()}>
+                            <Icon name='md-close' />
                         </Button>
                     </FooterTab>
                 </Footer>
