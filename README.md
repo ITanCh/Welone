@@ -14,10 +14,10 @@ Welone 是一个简单的微博客户端，只提供浏览所关注的内容。
 ![用户](https://github.com/ITanCh/Welone/blob/master/readme/welone_3.png)
 
 ### 主界面
-![主界面](https://github.com/ITanCh/Welone/blob/master/readme/welone_1.png) 。
+![主界面](https://github.com/ITanCh/Welone/blob/master/readme/welone_1.png)
 
 ### 内容   
-![主界面](https://github.com/ITanCh/Welone/blob/master/readme/welone_2.png) 。
+![主界面](https://github.com/ITanCh/Welone/blob/master/readme/welone_2.png)
 
 > 未完待续  
 
