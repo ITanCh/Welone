@@ -91,9 +91,7 @@ const styles = StyleSheet.create({
     cardFootStyle: {
         paddingVertical: 5,
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#e5e8e8'
+        justifyContent: 'space-around'
     },
     commentButton: {
         flex: 1,

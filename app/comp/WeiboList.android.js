@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, View, Image, ToastAndroid } from 'react-native';
+import { ListView, View, Image, ToastAndroid, StyleSheet } from 'react-native';
 import { Button, Spinner, Icon, Card, CardItem, Thumbnail, Text } from 'native-base';
 
 import WeiboCard from './WeiboCard'
@@ -217,36 +217,32 @@ export default class WeiboList extends Component {
                 );
             } else {
                 content = (
-                    <View style={{ flex: 1, alignItems: 'center', }}>
-                        <Card style={{ alignSelf: 'stretch' }}>
-                            <CardItem>
-                                <View View style={{ flex: 1 }}>
-                                    <View style={{ flex: 5, alignItems: 'center' }}>
-                                        <Thumbnail size={70} source={{ uri: this.state.userInfo.avatar_large }} />
-                                        <Text>{this.state.userInfo.name}</Text>
-                                        <Text style={{ color: 'silver' }}>{this.state.userInfo.description}</Text>
-                                    </View>
-                                    <View style={{ marginTop: 30, borderTopWidth: 1, borderTopColor: '#f4f6f7', flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                        <Button transparent textStyle={{ color: '#626567' }}>
-                                            <Icon name="ios-heart-outline" style={{ color: '#f1948a' }} />
-                                            <Text>{this.state.userInfo.friends_count}</Text>
-                                        </Button>
-                                        <Button transparent textStyle={{ color: '#626567' }}>
-                                            <Icon name="ios-leaf-outline" style={{ color: '#82e0aa' }} />
-                                            <Text>{this.state.userInfo.statuses_count}</Text>
-                                        </Button>
-                                        <Button transparent textStyle={{ color: '#626567' }}>
-                                            <Icon name="ios-eye-outline" style={{ color: '#85c1e9' }} />
-                                            <Text>{this.state.userInfo.followers_count}</Text>
-                                        </Button>
-                                    </View>
-                                </View>
-                            </CardItem>
-                        </Card>
-                        <View style={{ width: 100, marginTop: 10 }}>
+                    <View style={styles.cardStyle}>
+                        <View View style={{ flex: 1 }}>
+                            <View style={styles.cardInfo}>
+                                <Thumbnail size={70} source={{ uri: this.state.userInfo.avatar_large }} />
+                                <Text>{this.state.userInfo.name}</Text>
+                                <Text style={{ color: 'silver' }}>{this.state.userInfo.description}</Text>
+                            </View>
+                            <View style={styles.logoInfo}>
+                                <Button transparent>
+                                    <Icon name="ios-heart" style={{ color: '#f1948a', fontSize: 20 }} />
+                                    <Text style={{ fontSize: 20, color: '#626567' }}>{this.state.userInfo.friends_count}</Text>
+                                </Button>
+                                <Button transparent>
+                                    <Icon name="ios-leaf" style={{ color: '#82e0aa', fontSize: 20 }} />
+                                    <Text style={{ fontSize: 20, color: '#626567' }}>{this.state.userInfo.statuses_count}</Text>
+                                </Button>
+                                <Button transparent>
+                                    <Icon name="ios-eye" style={{ color: '#85c1e9', fontSize: 20 }} />
+                                    <Text style={{ fontSize: 20, color: '#626567' }}>{this.state.userInfo.followers_count}</Text>
+                                </Button>
+                            </View>
+                        </View>
+                        <View style={{ flex: 1, width: 100, marginTop: 10 }}>
                             <Button block danger onPress={() => this.onPressLogout()}>
-                                <Icon name='md-log-out' />
-                                登出
+                                <Icon style={{ fontSize: 20 }} name='md-log-out' />
+                                <Text style={{ fontSize: 20 }}>登出</Text>
                             </Button>
                         </View>
                     </View>
@@ -256,3 +252,31 @@ export default class WeiboList extends Component {
         }
     }
 }
+
+
+const styles = StyleSheet.create({
+    cardStyle: {
+        marginTop: 7,
+        paddingVertical: 7,
+        borderWidth: 1,
+        borderColor: '#e5e8e8',
+        borderRadius: 2,
+        backgroundColor: '#ffffff',
+        alignItems: 'center'
+    },
+
+    cardInfo: {
+        flex: 5,
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f4f6f7'
+    },
+
+    logoInfo: {
+        marginTop: 30,
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    }
+});

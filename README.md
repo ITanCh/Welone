@@ -4,7 +4,7 @@
 
 ![](http://7xky03.com1.z0.glb.clouddn.com/long@80x80.png)
 
-[*点击下载apk*](https://github.com/ITanCh/Welone/releases/download/v1.0-beta/app-release.apk)
+[**点击下载apk**](https://github.com/ITanCh/Welone/releases/download/v1.0-beta/app-release.apk)
 
 ## 说明 
 
