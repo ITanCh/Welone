@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -18,8 +17,10 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
+import com.sina.weibo.sdk.openapi.CommentsAPI;
 import com.sina.weibo.sdk.openapi.StatusesAPI;
 import com.sina.weibo.sdk.openapi.UsersAPI;
+
 
 /**
  * Created by Tianchi on 17/1/9.
@@ -37,10 +38,12 @@ public class WeiboModule extends ReactContextBaseJavaModule {
     private SsoHandler mSsoHandler = null;
     //User API
     private UsersAPI mUsersAPI = null;
-    ///Statuses API
+    //Statuses API
     private StatusesAPI mStatusesAPI = null;
+    //Comments API
+    private CommentsAPI mCommentsAPI = null;
 
-    private final static String LOG_TAG = "weidemo";
+    private final static String LOG_TAG = "welone";
 
     public WeiboModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -200,7 +203,7 @@ public class WeiboModule extends ReactContextBaseJavaModule {
                 if (info != null && info.length() > 0) {
                     successCallback.invoke(info);
                 } else {
-                    errorCallback.invoke("Get user information: showSync error..");
+                    errorCallback.invoke("Get user info error..");
                 }
             } catch (com.sina.weibo.sdk.exception.WeiboException e) {
                 errorCallback.invoke("Please open the Internet :)");
@@ -224,7 +227,32 @@ public class WeiboModule extends ReactContextBaseJavaModule {
                 if (info != null && info.length() > 0) {
                     successCallback.invoke(info);
                 } else {
-                    errorCallback.invoke("Get user information: showSync error..");
+                    errorCallback.invoke("Get weibo error..");
+                }
+            } catch (com.sina.weibo.sdk.exception.WeiboException e) {
+                errorCallback.invoke("Please open the Internet :)");
+            }
+        } else {
+            errorCallback.invoke("Get user information: token error..");
+        }
+    }
+
+    @ReactMethod
+    public void getShow(String ids, String sinceId, String maxId, Callback successCallback, Callback errorCallback) {
+        Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
+        if (token != null && token.isSessionValid()) {
+            if (mCommentsAPI == null) {
+                mCommentsAPI = new CommentsAPI(getCurrentActivity(), Constants.APP_KEY, token);
+            }
+            try {
+                long id = Long.parseLong(ids);
+                long since = Long.parseLong(sinceId);
+                long max = Long.parseLong(maxId);
+                String info = mCommentsAPI.showSync(id, since, max, 10, 1, 0);
+                if (info != null && info.length() > 0) {
+                    successCallback.invoke(info);
+                } else {
+                    errorCallback.invoke("Get comments error..");
                 }
             } catch (com.sina.weibo.sdk.exception.WeiboException e) {
                 errorCallback.invoke("Please open the Internet :)");

@@ -197,8 +197,8 @@ export default class WeiboList extends Component {
                     }}>
                         <View style={{ width: 200, height: 100 }}>
                             <Button block primary onPress={() => this.onPressLogin()}>
-                                <Icon name='ios-log-in' />
-                                登陆
+                                <Icon style={{ fontSize: 20 }} name='ios-log-in' />
+                                <Text style={{ fontSize: 20 }}>登陆</Text>
                             </Button>
                         </View>
 
