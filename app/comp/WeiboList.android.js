@@ -4,6 +4,7 @@ import { Button, Spinner, Icon, Card, CardItem, Thumbnail, Text } from 'native-b
 
 import WeiboCard from './WeiboCard'
 import WeiboModule from './module/WeiboModule'
+import WeiboToMeList from './WeiboToMeList'
 import { NEW_WEIBO, OLD_WEIBO, TAB_LOVE, TAB_ME, TAB_SET } from './WeiboConstant';
 
 const NOT_LOGIN = 0;
@@ -11,7 +12,8 @@ const IS_LOGIN = 1;
 const ING_LOGIN = 2;
 
 const GET_HEADER = 0;
-const GET_FOOTER = 1;
+const GET_MORE_WEIBO = 1;
+const GET_MORE_MESSAGE = 2;
 
 export default class WeiboList extends Component {
 
@@ -30,6 +32,7 @@ export default class WeiboList extends Component {
         };
 
         this.loveData = [];
+        this.meData = [];
         this.sinceID = 0;
         this.maxID = 0;
         this.gettingTimeLine = false;
@@ -146,9 +149,59 @@ export default class WeiboList extends Component {
         );
     }
 
+    //get the messages sent to me
+    getMentions() {
+        //if the last request has not been reponsed, do nothing
+
+        let since = 0;
+        let max = 0;
+
+        WeiboModule.getToMe(
+            since.toString(),
+            max.toString(),
+            (success) => {
+                if (success.length > 0) {
+                    let messages = JSON.parse(success);
+                    console.log(messages);
+                    if (messages.length > 0) {
+                        console.log(messages);
+                    } else {
+                        ToastAndroid.showWithGravity('没人理你 zZ', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    }
+                } else {
+                    ToastAndroid.showWithGravity('无言以对 :(', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                }
+            },
+            (err) => {
+                ToastAndroid.showWithGravity(err, ToastAndroid.SHORT, ToastAndroid.CENTER);
+            }
+        );
+
+        WeiboModule.getMentions(
+            since.toString(),
+            max.toString(),
+            (success) => {
+                if (success.length > 0) {
+                    let messages = JSON.parse(success);
+                    console.log(messages);
+                    if (messages.length > 0) {
+                        console.log(messages);
+                    } else {
+                        ToastAndroid.showWithGravity('没人理你 zZ', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    }
+                } else {
+                    ToastAndroid.showWithGravity('无言以对 :(', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                }
+            },
+            (err) => {
+                ToastAndroid.showWithGravity(err, ToastAndroid.SHORT, ToastAndroid.CENTER);
+            }
+        );
+    }
+
     //The footer of the listview 
     getEnd(type) {
-        if (type === GET_FOOTER) {
+        if (type === GET_MORE_WEIBO) {
             return (
                 <View style={{ alignItems: 'center' }} >
                     <View style={{ marginVertical: 7 }}>
@@ -173,16 +226,13 @@ export default class WeiboList extends Component {
                 <ListView
                     dataSource={this.state.loveSource}
                     renderRow={(rowData) => <WeiboCard weiData={rowData} navigator={this.props.navigator} />}
-                    renderFooter={() => this.getEnd(GET_FOOTER)}
+                    renderFooter={() => this.getEnd(GET_MORE_WEIBO)}
                 />
             );
         } else if (this.props.tab === TAB_ME) {
             //My info
             return (
-                <ListView
-                    dataSource={this.state.meSource}
-                    renderRow={(rowData) => <WeiboCard weiData={rowData} />}
-                />
+                <WeiboToMeList/>
             );
         } else {
             //User Setting

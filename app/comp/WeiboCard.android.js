@@ -3,19 +3,10 @@ import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Card, CardItem, Thumbnail, Button, Text as TextBase, Icon } from 'native-base';
 import WeiboImage from './WeiboImage';
 import WeiboContent from './WeiboContent';
-import WeiboCommentList from './WeiboCommentList';
 
-import WeiboModule from './module/WeiboModule';
+import {NEW_COMMENT} from './WeiboConstant';
 
 export default class WeiboCard extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            comments: [],
-        };
-    }
 
     //start the weibo content
     startWeiboContent(data) {
@@ -42,27 +33,9 @@ export default class WeiboCard extends Component {
         }
     }
 
-    //get weibo comments
-    getComments(id) {
-        if (id) {
-            WeiboModule.getShow(
-                id.toString(),
-                "0",
-                "0",
-                (success) => {
-                    if (success.length > 0) {
-                        let { comments } = JSON.parse(success);
-                        if (comments) {
-                            this.setState({ comments: comments });
-                        }
-                    } else {
-                        ToastAndroid.showWithGravity("无法获得评论", ToastAndroid.SHORT, ToastAndroid.CENTER, )
-                    }
-                },
-                (err) => {
-                    ToastAndroid.showWithGravity(err, ToastAndroid.SHORT, ToastAndroid.CENTER)
-                }
-            );
+    getComments() {
+        if (this.props.getComments) {
+            this.props.getComments(NEW_COMMENT);
         }
     }
 
@@ -90,7 +63,7 @@ export default class WeiboCard extends Component {
                         <Icon style={{ color: 'silver', fontSize: 20 }} name='ios-share-outline' />
                         <Text style={{ color: 'silver', marginLeft: 3 }}>{this.props.weiData.reposts_count}</Text>
                     </View>
-                    <TouchableOpacity style={styles.commentButton} onPress={() => this.getComments(this.props.weiData.id)}>
+                    <TouchableOpacity style={styles.commentButton} onPress={() => this.getComments()}>
                         <Icon style={{ color: 'silver', fontSize: 20 }} name='ios-chatboxes-outline' />
                         <Text style={{ color: 'silver', marginLeft: 3 }}>{this.props.weiData.comments_count}</Text>
                     </TouchableOpacity>
@@ -99,18 +72,9 @@ export default class WeiboCard extends Component {
                         <Text style={{ color: 'silver', marginLeft: 3 }}>{this.props.weiData.attitudes_count}</Text>
                     </View>
                 </View>
-
-                {this.renderComments()}
             </View>
         );
         return lc;
-    }
-
-    renderComments() {
-        if (this.state.comments && this.state.comments.length > 0) {
-            return (<WeiboCommentList comments={this.state.comments} />);
-        }
-        return null;
     }
 }
 

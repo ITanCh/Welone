@@ -158,7 +158,11 @@ public class WeiboModule extends ReactContextBaseJavaModule {
         mSsoHandler.authorize(new AuthListener(successCallback, errorCallback));
     }
 
-
+    /**
+     * log out weibo
+     *
+     * @param callback
+     */
     @ReactMethod
     public void logout(Callback callback) {
         Activity activity = getCurrentActivity();
@@ -174,6 +178,11 @@ public class WeiboModule extends ReactContextBaseJavaModule {
         callback.invoke(true);
     }
 
+    /**
+     * if user login
+     *
+     * @param callback
+     */
     @ReactMethod
     public void isLogin(Callback callback) {
         Activity activity = getCurrentActivity();
@@ -190,6 +199,12 @@ public class WeiboModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * get the information of the user
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
     @ReactMethod
     public void getUserInfo(Callback successCallback, Callback errorCallback) {
         Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
@@ -213,6 +228,14 @@ public class WeiboModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * get the status of your friends
+     *
+     * @param sinceId
+     * @param maxId
+     * @param successCallback
+     * @param errorCallback
+     */
     @ReactMethod
     public void getTimeline(String sinceId, String maxId, Callback successCallback, Callback errorCallback) {
         Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
@@ -237,6 +260,15 @@ public class WeiboModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * get the comments of a weibo
+     *
+     * @param ids
+     * @param sinceId
+     * @param maxId
+     * @param successCallback
+     * @param errorCallback
+     */
     @ReactMethod
     public void getShow(String ids, String sinceId, String maxId, Callback successCallback, Callback errorCallback) {
         Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
@@ -253,6 +285,72 @@ public class WeiboModule extends ReactContextBaseJavaModule {
                     successCallback.invoke(info);
                 } else {
                     errorCallback.invoke("Get comments error..");
+                }
+            } catch (com.sina.weibo.sdk.exception.WeiboException e) {
+                errorCallback.invoke("Please open the Internet :)");
+            }
+        } else {
+            errorCallback.invoke("Get user information: token error..");
+        }
+    }
+
+    /**
+     *
+     * get comments sent to me
+     *
+     * @param sinceId
+     * @param maxId
+     * @param successCallback
+     * @param errorCallback
+     */
+    @ReactMethod
+    public void getToMe(String sinceId, String maxId, Callback successCallback, Callback errorCallback) {
+        Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
+        if (token != null && token.isSessionValid()) {
+            if (mCommentsAPI == null) {
+                mCommentsAPI = new CommentsAPI(getCurrentActivity(), Constants.APP_KEY, token);
+            }
+            try {
+                long since = Long.parseLong(sinceId);
+                long max = Long.parseLong(maxId);
+                String info = mCommentsAPI.toMESync(since, max, 10, 1, 0, 0);
+                if (info != null && info.length() > 0) {
+                    successCallback.invoke(info);
+                } else {
+                    errorCallback.invoke("Get comments to me error..");
+                }
+            } catch (com.sina.weibo.sdk.exception.WeiboException e) {
+                errorCallback.invoke("Please open the Internet :)");
+            }
+        } else {
+            errorCallback.invoke("Get user information: token error..");
+        }
+    }
+
+    /**
+     *
+     * get @ me
+     *
+     * @param sinceId
+     * @param maxId
+     * @param successCallback
+     * @param errorCallback
+     */
+    @ReactMethod
+    public void getMentions(String sinceId, String maxId, Callback successCallback, Callback errorCallback) {
+        Oauth2AccessToken token = AccessTokenKeeper.getAccessToken();
+        if (token != null && token.isSessionValid()) {
+            if (mCommentsAPI == null) {
+                mCommentsAPI = new CommentsAPI(getCurrentActivity(), Constants.APP_KEY, token);
+            }
+            try {
+                long since = Long.parseLong(sinceId);
+                long max = Long.parseLong(maxId);
+                String info = mCommentsAPI.mentionsSync(since, max, 10, 1, 0, 0);
+                if (info != null && info.length() > 0) {
+                    successCallback.invoke(info);
+                } else {
+                    errorCallback.invoke("Get comments to me error..");
                 }
             } catch (com.sina.weibo.sdk.exception.WeiboException e) {
                 errorCallback.invoke("Please open the Internet :)");
